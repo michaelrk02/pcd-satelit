@@ -1,0 +1,8 @@
+/satellite.jpg
+/satellite-dark.jpg
+/satellite-light.jpg
+
+/data/**
+!/data/.gitkeep
+
+/octave-workspace
