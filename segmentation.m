@@ -2,7 +2,7 @@ function segmentation()
     segments = 3;
     H_gauss = kernelize(@G, (-5:5));
 
-    printf('Loading image ...\n');
+    fprintf('Loading image ...\n');
     I = imread('data/input.jpg');
     I_raw = I;
 
@@ -10,22 +10,24 @@ function segmentation()
     r = D(1);
     c = D(2);
 
-    printf('Performing HSV segmentation ...\n');
+    fprintf('Performing HSV segmentation ...\n');
     Seg = hsv_segments(I, @thresh, segments);
     Seg_raw = Seg;
 
     repairs = 3;
+    combined_edges = zeros(r, c); % Initialize combined_edges
+    
     for i = 1:repairs
         Seg_old = Seg;
         Seg = zeros(r, c);
 
-        printf('Repairing segmentation (%d of %d) ...\n', i, repairs);
+        fprintf('Repairing segmentation (%d of %d) ...\n', i, repairs);
 
         for k = 1:segments
             M = decompose_segment(Seg_old, segments, k);
             imwrite(M, sprintf('data/segments-decompose-%d-raw.jpg', k));
 
-            printf('- Removing noise on segment %d ...\n', k);
+            fprintf('- Removing noise on segment %d ...\n', k);
             M = imfilter(M, H_gauss);
             imwrite(M, sprintf('data/segments-decompose-%d-gauss.jpg', k));
 
@@ -34,12 +36,33 @@ function segmentation()
             Seg = compose_segment(Seg, segments, k, M);
 
             imwrite(M, sprintf('data/segments-decompose-%d-repaired.jpg', k));
+            
+            % Add edge detection step
+            fprintf('Performing edge detection ...\n');
+            [grayscale_edges, binary_edges] = edge_sobel(colorize_segments(Seg));
+
+            imwrite(grayscale_edges, sprintf('data/edges-detection-%d.jpg', k));
+            imwrite(binary_edges, sprintf('data/binary_edges-detection-%d.jpg', k));
+            
+            % Combine binary edges using element-wise addition
+            combined_edges = combined_edges + binary_edges;
+
+            fprintf('Segmentation and edge detection complete.\n');
         end
     end
 
     imwrite(colorize_segments(Seg_raw), 'data/segments-raw.jpg');
     imwrite(colorize_segments(Seg), 'data/segments-repaired.jpg');
+    
+    % Threshold combined_edges to create a binary map
+    threshold_combined_edges = combined_edges > 0;
+    imwrite(threshold_combined_edges, 'data/combined_edges-detection.jpg');
+    
     imwrite(imfuse(I_raw, colorize_segments(Seg), 'blend'), 'data/segments-image.jpg');
+    
+    imwrite(imfuse(I_raw, threshold_combined_edges, 'blend'), 'data/detection-image.jpg');
+
+    fprintf('Segmentation and edge detection complete.\n');
 end
 
 function s = segment(n, i)
@@ -172,7 +195,7 @@ function I_out = colorize_segments(I)
 end
 
 function k = kernelize(f, R)
-    s = size(R)(2);
+    s = size(R,2);
     X = repmat(R, s, 1);
     Y = repmat(R', 1, s);
     k = f(X, Y);
@@ -181,5 +204,5 @@ end
 
 function z = G(x, y)
     s = 5.0;
-    z = 1/(2*pi*s^2)*e.^-((x.^2+y.^2)/(2*s^2));
-end
+    z = 1/(2*pi*s^2)*exp(-((x.^2+y.^2)/(2*s^2)));
+end 

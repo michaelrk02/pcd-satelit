@@ -21,30 +21,30 @@ function preprocessing()
     mask_cmp_distinct = @(t, m, s) abs(t - m) > s;
     mask_cmp_average = @(t, m, s) abs(t - m) <= s;
 
-    printf('Masking image based on the distinctive saturation range ...\n');
+    fprintf('Masking image based on the distinctive saturation range ...\n');
     M_distinct = mask(S, mask_cmp_distinct);
     M_average = mask(S, mask_cmp_average);
 
     imwrite(M_distinct, 'data/preprocessing-mask-distinct.jpg');
     imwrite(M_average, 'data/preprocessing-mask-average.jpg');
 
-    printf('Repairing channels ...\n');
+    fprintf('Repairing channels ...\n');
 
-    printf('Repairing hue channel ...\n');
+    fprintf('Repairing hue channel ...\n');
     H = repair(H, M_distinct, M_average);
 
-    printf('Repairing saturation channel ...\n');
+    fprintf('Repairing saturation channel ...\n');
     S = repair(S, M_distinct, M_average);
 
-    printf('Repairing value channel ...\n');
+    fprintf('Repairing value channel ...\n');
     V = repair(V, M_distinct, M_average);
 
-    printf('Reconstructing image ...\n');
+    fprintf('Reconstructing image ...\n');
     I = hsv2rgb(cat(3, H, S, V));
 
     imwrite(I, 'data/input.jpg');
 
-    printf('Preprocessing completed\n');
+    fprintf('Preprocessing completed\n');
 end
 
 function I_out = mask(I, cmp)
@@ -109,7 +109,7 @@ function s = masked_std(I, M)
 end
 
 function k = kernelize(f, R)
-    s = size(R)(2);
+    s = size(R, 2);
     X = repmat(R, s, 1);
     Y = repmat(R', 1, s);
     k = f(X, Y);
