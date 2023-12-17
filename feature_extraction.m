@@ -53,7 +53,7 @@ function feature_extraction(segment_name, Seg, k, H_gauss,I)
     axis off;
     
     % Save the segmented image
-    imwrite(colorize_segments(M), sprintf('data/%s-segment.jpg', lower(segment_name)));
+    imwrite(hsv2rgb((cat(3, H.*M, S.*M, V.*M))), sprintf('data/%s-segment.jpg', lower(segment_name)));
     imwrite(M_binary, sprintf('data/%s-binary.jpg', lower(segment_name)));
 end
  
