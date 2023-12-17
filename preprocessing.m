@@ -92,21 +92,7 @@ function I_out = repair_transform(I, M, s_mean, s_std, t_mean, t_std)
             end
         end
     end
-end
-
-function m = masked_mean(I, M)
-    M = double(M);
-    M(abs(M) < 0.05) = NaN;
-
-    m = mean(rmmissing(reshape(M .* I, 1, [])));
-end
-
-function s = masked_std(I, M)
-    M = double(M);
-    M(abs(M) < 0.05) = NaN;
-
-    s = std(rmmissing(reshape(M .* I, 1, [])));
-end
+end 
 
 function k = kernelize(f, R)
     s = size(R, 2);

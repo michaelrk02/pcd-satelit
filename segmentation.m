@@ -63,12 +63,13 @@ function segmentation()
     imwrite(imfuse(I_raw, threshold_combined_edges, 'blend'), 'data/detection-image.jpg');
 
     fprintf('Segmentation and edge detection complete.\n');
-end
 
-function s = segment(n, i)
-    s = i / n;
+    % Display and save segmented images
+    feature_extraction('Vegetations', Seg, 1, H_gauss, I);
+    feature_extraction('Soil', Seg, 2, H_gauss, I);
+    feature_extraction('Buildings', Seg, 3, H_gauss, I);
 end
-
+ 
 function d = hsv_dist(A, B, W)
     d = norm(W .* (A - B));
 end
@@ -109,22 +110,7 @@ function t_fix = thresh_repair(t, n)
         end
     end
 end
-
-function I_out = decompose_segment(I, n, k)
-    D = size(I);
-    r = D(1);
-    c = D(2);
-    I_out = zeros(r, c);
-    t = segment(n, k);
-
-    for i = 1:r
-        for j = 1:c
-            if abs(I(i, j) - t) <= 0.05
-                I_out(i, j) = 1.0;
-            end
-        end
-    end
-end
+ 
 
 function I_out = compose_segment(I, n, k, M)
     I_out = I;
@@ -172,28 +158,7 @@ function I_out = repair_segments(I, t, n)
         end
     end
 end
-
-function I_out = colorize_segments(I)
-    D = size(I);
-    r = D(1);
-    c = D(2);
-
-    H = zeros(r, c);
-    S = 1.0 * ones(r, c);
-    V = 0.75 * ones(r, c);
-    for i = 1:r
-        for j = 1:c
-            if I(i, j) >= 0.05
-                H(i,j) = 0.75 * I(i,j);
-            else
-                V(i,j) = 0.0;
-            end
-        end
-    end
-
-    I_out = hsv2rgb(cat(3, H, S, V));
-end
-
+ 
 function k = kernelize(f, R)
     s = size(R,2);
     X = repmat(R, s, 1);
@@ -205,4 +170,7 @@ end
 function z = G(x, y)
     s = 5.0;
     z = 1/(2*pi*s^2)*exp(-((x.^2+y.^2)/(2*s^2)));
-end 
+end   
+
+ 
+
