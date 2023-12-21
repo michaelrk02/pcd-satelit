@@ -1,5 +1,5 @@
 function [grayscale_edges, binary_edges] = edge_sobel(I)
-    I_gray = rgb2gray(I);
+    I_gray = I;
 
     % Sobel operator
     SobelX = [-1 0 1; -2 0 2; -1 0 1];

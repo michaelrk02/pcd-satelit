@@ -1,0 +1,3 @@
+#!/bin/bash
+ln -sf satellite$1.jpg satellite.jpg
+ln -sf satellite$1-label.png satellite-label.png

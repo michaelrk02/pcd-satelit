@@ -1,3 +1,4 @@
+% matlab
 
 function feature_extraction(segment_name, Seg, k, H_gauss,I) 
     HSV = rgb2hsv(I);
@@ -9,16 +10,10 @@ function feature_extraction(segment_name, Seg, k, H_gauss,I)
     
     M = decompose_segment(Seg, 3, k);
     
-    fprintf('- Removing noise on segment %s ...\n', segment_name);
-    M = imfilter(M, H_gauss);
-    
-    fprintf('- Converting to binary image ...\n');
-    M_binary = double(im2bw(M, 0.5));
-    
     % Extract features
-    mean_H_val = masked_mean(H,M); 
-    mean_S_val = masked_mean(S,M); 
-    mean_V_val = masked_mean(V,M); 
+    mean_H_val = masked_mean(H,M)
+    mean_S_val = masked_mean(S,M)
+    mean_V_val = masked_mean(V,M)
     % mean_val = mean(M(:));
     std_H_val = masked_std(H, M)
     std_S_val = masked_std(S, M)
@@ -35,7 +30,7 @@ function feature_extraction(segment_name, Seg, k, H_gauss,I)
     subplot(2, 2, 1), imshow(hsv2rgb((cat(3, H.*M, S.*M, V.*M)))), title(sprintf('%s Segment', segment_name));
     
     % Display the binary image
-    subplot(2, 2, 2), imshow(M_binary), title(sprintf('%s Binary', segment_name));
+    subplot(2, 2, 2), imshow(M), title(sprintf('%s Binary', segment_name));
     
     % Display the mean value
     subplot(5, 1, 3);
@@ -53,7 +48,7 @@ function feature_extraction(segment_name, Seg, k, H_gauss,I)
     axis off;
     
     % Save the segmented image
-    imwrite(hsv2rgb((cat(3, H.*M, S.*M, V.*M))), sprintf('data/%s-segment.jpg', lower(segment_name)));
-    imwrite(M_binary, sprintf('data/%s-binary.jpg', lower(segment_name)));
+    imwrite(hsv2rgb((cat(3, H.*M, S.*M, V.*M))), sprintf('data/%s-segment.png', lower(segment_name)));
+    imwrite(M, sprintf('data/%s-binary.png', lower(segment_name)));
 end
  

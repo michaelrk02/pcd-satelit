@@ -18,6 +18,8 @@ function preprocessing()
 
     V = repair_transform(V, ones(r, c), V0_mean, V0_std, Vf_mean, Vf_std);
 
+    imwrite(hsv2rgb(cat(3, H, S, V)), 'data/preprocessing-adjusted.jpg');
+
     mask_cmp_distinct = @(t, m, s) abs(t - m) > s;
     mask_cmp_average = @(t, m, s) abs(t - m) <= s;
 
@@ -25,8 +27,8 @@ function preprocessing()
     M_distinct = mask(S, mask_cmp_distinct);
     M_average = mask(S, mask_cmp_average);
 
-    imwrite(M_distinct, 'data/preprocessing-mask-distinct.jpg');
-    imwrite(M_average, 'data/preprocessing-mask-average.jpg');
+    imwrite(M_distinct, 'data/preprocessing-mask-distinct.png');
+    imwrite(M_average, 'data/preprocessing-mask-average.png');
 
     fprintf('Repairing channels ...\n');
 

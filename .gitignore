@@ -1,6 +1,7 @@
 /satellite.jpg
 /satellite-dark.jpg
 /satellite-light.jpg
+/satellite-label.png
 
 /data/**
 !/data/.gitkeep

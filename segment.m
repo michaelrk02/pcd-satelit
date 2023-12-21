@@ -1,3 +1,3 @@
 function s = segment(n, i)
-    s = i / n;
+    s = i;
 end
