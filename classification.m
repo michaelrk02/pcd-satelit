@@ -5,7 +5,7 @@ function classification()
     S_actual = rgb2hsv(imread('satellite-label.png'));
 
     fprintf('Segmentation result:\n');
-    % score_segmentation(S_predicted, S_actual);
+    score_segmentation(S_predicted, S_actual);
     fprintf('\n');
 
     fprintf('Edge detection result:\n');
